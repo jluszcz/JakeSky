@@ -1,0 +1,7 @@
+.Python
+bin/
+include/
+jakesky.vars
+JakeSky.zip
+lib/
+pip-selfcheck.json
