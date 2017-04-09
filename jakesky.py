@@ -55,10 +55,10 @@ def query_dark_sky(latitude, longitude, use_cache=False):
 
     # Since we only care about the current and hourly forecast for specific times, exclude some of the data in the response.
     url = 'https://api.darksky.net/forecast/%s/%f,%f?exclude=minutely,daily,flags' % (key, latitude, longitude)
-    headers = {'Accept-Encoding:': 'gzip'}
+    headers = {'Accept-Encoding': 'gzip'}
 
     logging.debug('Querying %s', url)
-    response = requests.get(url)
+    response = requests.get(url, headers=headers)
     response.raise_for_status()
 
     logging.debug('%s', response.text)
