@@ -144,14 +144,13 @@ def main():
     """Entry point for running as a CLI"""
 
     args = parse_args()
-
     setup_logging(args.verbose)
 
     response = query_dark_sky(args.latitude, args.longitude, use_cache=args.use_cache)
-
     weather = parse_weather(response)
+    to_speak = build_text_to_speak(weather)
 
-    logging.info(build_text_to_speak(weather))
+    logging.info(to_speak)
 
 def alexa_handler(event, context):
     """Entry point for Lambda"""
@@ -167,19 +166,15 @@ def alexa_handler(event, context):
     weather = parse_weather(response)
     to_speak = build_text_to_speak(weather)
 
-    speech = {
-        'type': 'PlainText',
-        'text': to_speak
-    }
-
-    to_return = {
+    return {
         'version': '1.0',
         'response': {
-            'outputSpeech': speech
+            'outputSpeech': {
+                'type': 'PlainText',
+                'text': to_speak
+            }
         }
     }
-
-    return to_return
 
 if __name__ == '__main__':
     main()
