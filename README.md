@@ -9,19 +9,19 @@ Returns the current weather, as well as a forecast for 8am, 12pm, and 6pm for th
 1. Get a [DarkSky key](https://darksky.net/dev/)
 1. Check out this project
 1. [Create a virtual environment](http://python-guide-pt-br.readthedocs.io/en/latest/starting/install/osx/):
-  1. `cd $jakesky_directory`
-  1. `python -m virtualenv activate`
+    1. `cd $jakesky_directory`
+    1. `python -m virtualenv activate`
 1. Source the virtualenv file: `source bin/activate`
 1. Install the required libraries:
-  * `pip install requests`
-  * `pip install pytz`
+    * `pip install requests`
+    * `pip install pytz`
 
 ## Running
 1. Set the following environment variables (I created a script called `jakesky.vars` I can source while testing):
-  - `JAKESKY_KEY=dark sky key`
-  - `JAKESKY_SKILL_ID=alexa skill id`
-  - `JAKESKY_LATITUDE=default latitude`
-  - `JAKESKY_LONGITUDE=default longitude`
+    - `JAKESKY_KEY=dark sky key`
+    - `JAKESKY_SKILL_ID=alexa skill id`
+    - `JAKESKY_LATITUDE=default latitude`
+    - `JAKESKY_LONGITUDE=default longitude`
 1. Test `jakesky.py` by running it with `-v` (use `--use-cache` to reduce the number of DarkSky API calls you have to make while testing)
 
 ## Hooking up to Alexa/AWS
