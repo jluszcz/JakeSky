@@ -70,4 +70,4 @@ GetWeather the forecast today
 ## TODOs
 
 - Try something like [Kappa](https://github.com/garnaat/kappa)
-- Use the Alexa location APIs and use the device location
+- Use the Alexa location APIs and [use the device location](https://geocod.io)
