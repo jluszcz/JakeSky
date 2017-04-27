@@ -105,7 +105,7 @@ def get_hours_of_interest(current_hour, hours=[8, 12, 18]):
 
     hours = sorted(hours)
     for n in range(len(hours)):
-        if current_hour < hours[n]:
+        if current_hour + 1 < hours[n]:
             hours_of_interest = hours[n:]
             break
 
