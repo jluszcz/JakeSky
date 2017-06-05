@@ -128,17 +128,25 @@ def build_text_to_speak(weather):
     # The first entry is assumed to be the current time, and there should always be at least one entry
     current = weather[0]
 
-    to_speak.append('It\'s currently %d and %s.' % (current.temperature, current.summary))
+    to_speak.append('It\'s currently %s.' % get_speakable_weather(current))
 
     # Remaining entries are in the future
     for w in weather[1:]:
-        to_speak.append('At %s, it will be %d and %s.' % (get_speakable_timestamp(w.timestamp), w.temperature, w.summary))
+        to_speak.append('At %s, it will be %s.' % (get_speakable_timestamp(w.timestamp), get_speakable_weather(w)))
 
     # Stick an 'And' on the final entry if there is more than one
     if len(to_speak) > 1:
         to_speak[-1] = 'And ' + to_speak[-1][0].lower() + to_speak[-1][1:]
 
     return ' '.join(to_speak)
+
+def get_speakable_weather(weather):
+    return '%d and %s' % (weather.temperature, get_speakable_weather_summary(weather.summary))
+
+def get_speakable_weather_summary(summary):
+    if summary.lower() == 'drizzle':
+        return 'Drizzling'
+    return summary
 
 def main():
     """Entry point for running as a CLI"""

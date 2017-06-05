@@ -17,5 +17,8 @@ class TestJakeSky(unittest.TestCase):
     def test_get_hours_of_interest_current_between_hours(self):
         self.assertEquals([12, 18], jakesky.get_hours_of_interest(current_hour=9, hours=[8, 12, 18]))
 
+    def test_get_speakable_weather_summary(self):
+        self.assertEquals('Drizzling', jakesky.get_speakable_weather_summary('Drizzle'))
+
 if __name__ == '__main__':
     unittest.main()
