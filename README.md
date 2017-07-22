@@ -15,20 +15,17 @@ Returns the current weather, as well as a forecast for 8am, 12pm, and 6pm for th
 1. Install the required libraries:
     * `pip install requests`
     * `pip install pytz`
+1. Set up environment variables, for example, by modifying `jakesky.example.vars` and sourcing it before working.
 
 ## Running
-1. Set the following environment variables (I created a script called `jakesky.vars` I can source while testing):
-    - `JAKESKY_KEY=dark sky key`
-    - `JAKESKY_SKILL_ID=alexa skill id`
-    - `JAKESKY_LATITUDE=default latitude`
-    - `JAKESKY_LONGITUDE=default longitude`
 1. Test `jakesky.py` by running it with `-v` (use `--use-cache` to reduce the number of DarkSky API calls you have to make while testing)
 
 ## Hooking up to Alexa/AWS
 
 1. Run `build.sh` to create `JakeSky.zip`, which will be uploaded as the Lambda
+1. Optionally install [Terraform](https://www.terraform.io) and use the provided configuration file (`jakesky.tf`) in order to configure the AWS side of things.
 1. Follow [this walkthrough](http://moduscreate.com/build-an-alexa-skill-with-python-and-aws-lambda/) for a description of how to set up the Alexa Skill and Lambda function.
-1. If your Amazon developer account is the same as the account your Echo devices are registered to, the JakeSky skill should be automatically available.
+1. If your Amazon developer account is the same as the account your Echo devices are registered to, the JakeSky skill should be automatically available on each device.
 
 ### Intent Schema
 
