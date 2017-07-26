@@ -25,6 +25,10 @@ resource "aws_cloudwatch_event_rule" "jakesky_schedule" {
     schedule_expression = "cron(0/5 11_13 ? * * *)"
 }
 
+resource "aws_kms_key" "lambda_default_key" {
+    enable_key_rotation = "true"
+}
+
 data "aws_iam_policy_document" "jakesky_role_policy_document" {
     statement {
         actions = ["logs:CreateLogGroup"]
@@ -72,6 +76,7 @@ resource "aws_lambda_function" "jakesky" {
     publish = "false"
     description = "Retrieve local weather from DarkSky for commutes and lunchtime"
 
+    kms_key_arn = "${aws_kms_key.lambda_default_key.arn}"
     environment {
         variables = {
             JAKESKY_KEY = "${var.jakesky_key}"
