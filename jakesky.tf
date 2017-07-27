@@ -31,13 +31,8 @@ resource "aws_kms_key" "lambda_default_key" {
 
 data "aws_iam_policy_document" "jakesky_role_policy_document" {
     statement {
-        actions = ["logs:CreateLogGroup"]
+        actions = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents", "logs:Describe*"]
         resources = ["arn:aws:logs:${var.aws_region}:${var.aws_acct_id}:*"]
-    }
-
-    statement {
-        actions = ["logs:CreateLogStream", "logs:PutLogEvents"]
-        resources = ["arn:aws:logs:${var.aws_region}:${var.aws_acct_id}:log_group:/aws/lambda/jakesky:*"]
     }
 }
 
