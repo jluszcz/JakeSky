@@ -138,7 +138,11 @@ def build_text_to_speak(weather):
     if len(to_speak) > 1:
         to_speak[-1] = 'And ' + to_speak[-1][0].lower() + to_speak[-1][1:]
 
-    return ' '.join(to_speak)
+    text_to_speak = ' '.join(to_speak)
+
+    logging.info('Will Speak: %s', text_to_speak)
+
+    return text_to_speak
 
 def get_speakable_weather(weather):
     return '%d and %s' % (weather.temperature, get_speakable_weather_summary(weather.summary))
@@ -157,8 +161,6 @@ def main():
     response = query_dark_sky(args.latitude, args.longitude, use_cache=args.use_cache)
     weather = parse_weather(response)
     to_speak = build_text_to_speak(weather)
-
-    logging.info(to_speak)
 
 def alexa_handler(event, context):
     """Entry point for Lambda"""
