@@ -33,9 +33,9 @@ def parse_args():
 
     args = parser.parse_args()
 
-    if args.latitude is None:
+    if not args.latitude:
         raise ValueError('--latitude or a default JAKESKY_LATITUDE is required')
-    if args.longitude is None:
+    if not args.longitude:
         raise ValueError('--longitude or a default JAKESKY_LONGITUDE is required')
 
     return args
@@ -75,7 +75,7 @@ def parse_weather(dark_sky_response):
     timezone = pytz.timezone(dark_sky_response['timezone'])
     now = datetime.fromtimestamp(dark_sky_response['currently']['time'], timezone)
 
-    hours_of_interest = get_hours_of_interest(now.hour)
+    hours_of_interest = get_hours_of_interest(now)
 
     weather = [Weather(now, dark_sky_response['currently']['summary'], dark_sky_response['currently']['temperature'])]
 
@@ -83,7 +83,7 @@ def parse_weather(dark_sky_response):
         hourly_weather_time = datetime.fromtimestamp(hourly_weather['time'], timezone)
 
         if hourly_weather_time.date() > now.date():
-            logging.debug('%s is no longer today', hourly_weather_time)
+            logging.debug('%s is no longer relevant', hourly_weather_time)
             break
 
         if hourly_weather_time.hour == now.hour:
@@ -98,8 +98,18 @@ def parse_weather(dark_sky_response):
 
     return weather
 
-def get_hours_of_interest(current_hour, hours=[8, 12, 18]):
+def get_hours_of_interest(current_time, hours=None, add_weekend_hour=True):
     """Return the hours of interest for today's forecast"""
+
+    if not hours:
+        hours = [8, 12, 18]
+    else:
+        hours = list(hours)
+
+    current_hour = current_time.hour
+
+    if add_weekend_hour and current_time.weekday() in [4, 5]:
+        hours.append(22)
 
     hours_of_interest = []
 
