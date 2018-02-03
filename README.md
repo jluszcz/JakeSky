@@ -1,5 +1,7 @@
 # JakeSky
 
+[![Build Status](https://travis-ci.org/jluszcz/JakeSky.svg?branch=master)](https://travis-ci.org/jluszcz/JakeSky)
+
 Returns the current weather, as well as a forecast for 8am, 12pm, and 6pm for the current date.
 
 [<img src="https://darksky.net/dev/img/attribution/poweredby-oneline.png" width="600"/>](https://darksky.net/poweredby/)
@@ -10,15 +12,19 @@ Returns the current weather, as well as a forecast for 8am, 12pm, and 6pm for th
 1. Check out this project
 1. [Create a virtual environment](http://python-guide-pt-br.readthedocs.io/en/latest/starting/install/osx/):
     1. `cd $jakesky_directory`
-    1. `python -m virtualenv activate`
+    1. `python -m virtualenv .`
 1. Source the virtualenv file: `source bin/activate`
 1. Install the required libraries:
-    * `pip install requests`
-    * `pip install pytz`
+    * `pip freeze -r requirements.txt`
 1. Set up environment variables, for example, by modifying `jakesky.example.vars` and sourcing it before working.
 
 ## Running
+
 1. Test `jakesky.py` by running it with `-v` (use `--use-cache` to reduce the number of DarkSky API calls you have to make while testing)
+
+## Testing
+
+`pytest -cov`
 
 ## Hooking up to Alexa/AWS
 
