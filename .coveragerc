@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = jakesky
+
+[html]
+directory = coverage

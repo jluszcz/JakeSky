@@ -4,6 +4,7 @@ lib/
 .terraform/
 *pyc
 .Python
+.coverage
 jakesky.vars
 JakeSky.zip
 pip-selfcheck.json
