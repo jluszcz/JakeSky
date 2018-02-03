@@ -16,7 +16,7 @@ Returns the current weather, as well as a forecast for 8am, 12pm, and 6pm for th
     1. `python -m virtualenv .`
 1. Source the virtualenv file: `source bin/activate`
 1. Install the required libraries:
-    * `pip freeze -r requirements.txt`
+    * `pip install -r requirements.txt`
 1. Set up environment variables, for example, by modifying `jakesky.example.vars` and sourcing it before working.
 
 ## Running
