@@ -2,6 +2,7 @@
 *tfstate*
 
 .coverage
+.pytest_cache
 .Python
 .terraform/
 

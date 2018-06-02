@@ -2,11 +2,11 @@
 
 import argparse
 import gzip
-import logging
 import json
+import logging
+import os
 import pytz
 import requests
-import os
 
 from collections import namedtuple
 from datetime import datetime
@@ -15,11 +15,13 @@ CACHE_FILE = '/tmp/darksky.json.gz'
 
 Weather = namedtuple('Weather', ['timestamp', 'summary', 'temperature'])
 
+
 def setup_logging(verbose=False):
     """Sets up logging using the default python logger, at INFO or DEBUG, depending on the value of verbose"""
 
     logger = logging.getLogger()
     logger.setLevel(logging.INFO if not verbose else logging.DEBUG)
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Retrieve Jake-specific weather')
@@ -39,6 +41,7 @@ def parse_args():
         raise ValueError('--longitude or a default JAKESKY_LONGITUDE is required')
 
     return args
+
 
 def query_dark_sky(latitude, longitude, use_cache=False):
     """
@@ -69,6 +72,7 @@ def query_dark_sky(latitude, longitude, use_cache=False):
 
     return json.loads(response.text)
 
+
 def parse_weather(dark_sky_response):
     """Retrieves relevant weather information from a DarkSky API response, returning a list of Weathers."""
 
@@ -98,6 +102,7 @@ def parse_weather(dark_sky_response):
 
     return weather
 
+
 def get_hours_of_interest(current_time, hours=None, add_weekend_hour=True):
     """Return the hours of interest for today's forecast"""
 
@@ -122,6 +127,7 @@ def get_hours_of_interest(current_time, hours=None, add_weekend_hour=True):
     logging.debug('Hours of interest: %s', hours_of_interest)
     return hours_of_interest
 
+
 def get_speakable_timestamp(timestamp):
     """Return a 'speakable' timestamp, e.g. 8am, noon, 9pm, etc."""
 
@@ -131,6 +137,7 @@ def get_speakable_timestamp(timestamp):
     elif speakable == '12 AM':
         return 'midnight'
     return speakable
+
 
 def build_text_to_speak(weather):
     to_speak = []
@@ -154,13 +161,16 @@ def build_text_to_speak(weather):
 
     return text_to_speak
 
+
 def get_speakable_weather(weather):
     return '%d and %s' % (weather.temperature, get_speakable_weather_summary(weather.summary))
+
 
 def get_speakable_weather_summary(summary):
     if summary.lower() == 'drizzle':
         return 'Drizzling'
     return summary
+
 
 def main():
     """Entry point for running as a CLI"""
@@ -170,7 +180,8 @@ def main():
 
     response = query_dark_sky(args.latitude, args.longitude, use_cache=args.use_cache)
     weather = parse_weather(response)
-    to_speak = build_text_to_speak(weather)
+    build_text_to_speak(weather)
+
 
 def alexa_handler(event, context):
     """Entry point for Lambda"""
@@ -184,8 +195,11 @@ def alexa_handler(event, context):
 
     # The only other caller of this lambda should be the JakeSky Alexa skill
     if event['session']['application']['applicationId'] != os.environ['JAKESKY_SKILL_ID']:
-        logging.error('Invalid application ID: %s, expected: %s', event['session']['application']['applicationId'], os.environ['JAKESKY_SKILL_ID'])
+        logging.error('Invalid application ID: %s, expected: %s',
+                      event['session']['application']['applicationId'], os.environ['JAKESKY_SKILL_ID'])
         raise ValueError('Invalid application ID')
+
+    logging.debug('Event:\n%s', json.dumps(event))
 
     response = query_dark_sky(float(os.environ['JAKESKY_LATITUDE']), float(os.environ['JAKESKY_LONGITUDE']))
     weather = parse_weather(response)
@@ -200,6 +214,7 @@ def alexa_handler(event, context):
             }
         }
     }
+
 
 if __name__ == '__main__':
     main()
