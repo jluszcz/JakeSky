@@ -1,8 +1,7 @@
 # Sourced from environment variables named TF_VAR_${VAR_NAME}
 variable "aws_acct_id" {}
-variable "jakesky_key" {}
-variable "jakesky_latitude" {}
-variable "jakesky_longitude" {}
+variable "jakesky_darksky_key" {}
+variable "jakesky_geocodio_key" {}
 variable "jakesky_skill_id" {}
 
 variable "jakesky_filename" {
@@ -74,9 +73,8 @@ resource "aws_lambda_function" "jakesky" {
     kms_key_arn = "${aws_kms_key.lambda_default_key.arn}"
     environment {
         variables = {
-            JAKESKY_KEY = "${var.jakesky_key}"
-            JAKESKY_LATITUDE = "${var.jakesky_latitude}"
-            JAKESKY_LONGITUDE = "${var.jakesky_longitude}"
+            JAKESKY_DARKSKY_KEY = "${var.jakesky_darksky_key}"
+            JAKESKY_GEOCODIO_KEY = "${var.jakesky_geocodio_key}"
             JAKESKY_SKILL_ID = "${var.jakesky_skill_id}"
         }
     }

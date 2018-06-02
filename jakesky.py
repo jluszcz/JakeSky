@@ -32,24 +32,20 @@ def parse_args(raw_args=None):
     parser.add_argument('--verbose', '-v', dest='verbose', action='store_true', help='If provided, log at DEBUG instead of INFO.')
     parser.add_argument('--use-cache', action='store_true',
                         help='If provided, use a cached response from the last time DarkSky was queried.')
-    parser.add_argument('--latitude', type=float, default=os.environ.get('JAKESKY_LATITUDE'),
-                        help='North is positive, South is negative.')
-    parser.add_argument('--longitude', type=float, default=os.environ.get('JAKESKY_LONGITUDE'),
-                        help='East is positive, West is negative.')
+    parser.add_argument('--address', default=os.environ.get('JAKESKY_ADDRESS'),
+                        help='Address in "street city state zipcode" format.')
 
     args = parser.parse_args(args=raw_args)
 
-    if not args.latitude:
-        raise ValueError('--latitude or a default JAKESKY_LATITUDE is required')
-    if not args.longitude:
-        raise ValueError('--longitude or a default JAKESKY_LONGITUDE is required')
+    if not args.address:
+        raise ValueError('--address or a default JAKESKY_ADDRESS is required')
 
     return args
 
 
 def query_dark_sky(latitude, longitude, use_cache=False):
     """
-    Queries DarkSky using the key from JAKESKY_KEY and returns the current and hourly forecast as a dict.
+    Queries DarkSky using the key from JAKESKY_DARKSKY_KEY and returns the current and hourly forecast as a dict.
     See https://darksky.net/dev/docs/response for a description of the response format.
     """
 
@@ -58,23 +54,28 @@ def query_dark_sky(latitude, longitude, use_cache=False):
         with gzip.open(CACHE_FILE, 'rb') as f:
             return json.loads(f.read())
 
-    key = os.environ['JAKESKY_KEY']
+    key = os.environ['JAKESKY_DARKSKY_KEY']
 
     # Since we only care about the current and hourly forecast for specific times, exclude some of the data in the response.
     url = 'https://api.darksky.net/forecast/%s/%f,%f?exclude=minutely,daily,flags' % (key, latitude, longitude)
-    headers = {'Accept-Encoding': 'gzip'}
+    headers = {
+        'Accept': 'application/json',
+        'Accept-Encoding': 'gzip',
+    }
 
     logging.debug('Querying %s', url)
     response = requests.get(url, headers=headers)
     response.raise_for_status()
 
-    logging.debug('%s', response.text)
+    response = response.json()
+
+    logging.debug(json.dumps(response))
 
     logging.debug('Writing result to %s', CACHE_FILE)
     with gzip.open(CACHE_FILE, 'wb') as f:
-        f.write(response.text)
+        json.dump(response, f)
 
-    return json.loads(response.text)
+    return response
 
 
 def parse_weather(dark_sky_response):
@@ -176,15 +177,70 @@ def get_speakable_weather_summary(summary):
     return summary
 
 
-def main():
-    """Entry point for running as a CLI"""
+def split_address_string(address_string):
+    parts = address_string.split()
+    assert len(parts) >= 4
 
-    args = parse_args()
-    setup_logging(args.verbose)
+    return ' '.join(parts[:-3]), parts[-3], parts[-2], parts[-1]
 
-    response = query_dark_sky(args.latitude, args.longitude, use_cache=args.use_cache)
-    weather = parse_weather(response)
-    build_text_to_speak(weather)
+
+def get_geo_coordinates(address_string=None, event=None):
+    if address_string:
+        address, city, state, postal_code = split_address_string(address_string)
+    elif event:
+        address, city, state, postal_code = get_alexa_device_location(event)
+    else:
+        raise ValueError('address_string or event must be provided')
+
+    return query_geocodio(address, city, state, postal_code)
+
+
+def get_alexa_device_location(event):
+    base_url = event['context']['System']['apiEndpoint']
+    device_id = event['context']['System']['device']['deviceId']
+    api_token = event['context']['System']['apiAccessToken']
+
+    header = {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer %s' % api_token
+    }
+
+    url = '%s/v1/devices/%s/settings/address' % (base_url, device_id)
+
+    response = requests.get(url, headers=header)
+    response.raise_for_status()
+
+    response = response.json()
+    logging.debug(json.dumps(response))
+
+    assert 'US' == response['countryCode']
+    return response['addressLine1'], response['city'], response['stateOrRegion'], response['postalCode']
+
+
+def query_geocodio(street, city, state, postal_code):
+    url = 'https://api.geocod.io/v1.3/geocode'
+    params = {
+        'street': street,
+        'city': city,
+        'state': state,
+        'postal_code': postal_code,
+        'api_key': os.environ['JAKESKY_GEOCODIO_KEY'],
+    }
+
+    header = {
+        'Accept': 'application/json'
+    }
+
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+
+    response = response.json()
+    logging.debug(json.dumps(response))
+
+    assert 1 == len(response['results'])
+    result = response['results'][0]
+
+    return result['location']['lat'], result['location']['lng']
 
 
 def alexa_handler(event, context):
@@ -205,7 +261,8 @@ def alexa_handler(event, context):
 
     logging.debug('Event:\n%s', json.dumps(event))
 
-    response = query_dark_sky(float(os.environ['JAKESKY_LATITUDE']), float(os.environ['JAKESKY_LONGITUDE']))
+    latitude, longitude = get_geo_coordinates(event=event)
+    response = query_dark_sky(latitude, longitude)
     weather = parse_weather(response)
     to_speak = build_text_to_speak(weather)
 
@@ -218,6 +275,20 @@ def alexa_handler(event, context):
             }
         }
     }
+
+
+def main():
+    """Entry point for running as a CLI"""
+
+    args = parse_args()
+    setup_logging(args.verbose)
+
+    logging.debug('Args: %s', args)
+
+    latitude, longitude = get_geo_coordinates(address_string=args.address)
+    response = query_dark_sky(latitude, longitude, use_cache=args.use_cache)
+    weather = parse_weather(response)
+    build_text_to_speak(weather)
 
 
 if __name__ == '__main__':

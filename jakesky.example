@@ -1,13 +1,11 @@
 #!/usr/bin/env sh
 
-export JAKESKY_KEY="DARKSKY_KEY"
+export JAKESKY_DARKSKY_KEY="DARKSKY_KEY"
+export JAKESKY_GEOCODIO_KEY="GEOCODIO_KEY"
 export JAKESKY_SKILL_ID="ALEXA_SKILL_ID"
-export JAKESKY_LATITUDE="LATITUDE"
-export JAKESKY_LONGITUDE="LONGITUDE"
 export TF_VAR_aws_acct_id="AWS_ACCOUNT_ID"
-export TF_VAR_jakesky_key="$JAKESKY_KEY"
-export TF_VAR_jakesky_latitude="$JAKESKY_LATITUDE"
-export TF_VAR_jakesky_longitude="$JAKESKY_LONGITUDE"
+export TF_VAR_jakesky_darksky_key="$JAKESKY_DARKSKY_KEY"
+export TF_VAR_jakesky_geocodio_key="$JAKESKY_GEOCODIO_KEY"
 export TF_VAR_jakesky_skill_id="$JAKESKY_SKILL_ID"
 
 source bin/activate
