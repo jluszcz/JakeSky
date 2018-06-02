@@ -7,6 +7,7 @@ import logging
 import os
 import pytz
 import requests
+import sys
 
 from collections import namedtuple
 from datetime import datetime
@@ -23,7 +24,10 @@ def setup_logging(verbose=False):
     logger.setLevel(logging.INFO if not verbose else logging.DEBUG)
 
 
-def parse_args():
+def parse_args(raw_args=None):
+    if raw_args is None:
+        raw_args = sys.argv[1:]
+
     parser = argparse.ArgumentParser(description='Retrieve Jake-specific weather')
     parser.add_argument('--verbose', '-v', dest='verbose', action='store_true', help='If provided, log at DEBUG instead of INFO.')
     parser.add_argument('--use-cache', action='store_true',
@@ -33,7 +37,7 @@ def parse_args():
     parser.add_argument('--longitude', type=float, default=os.environ.get('JAKESKY_LONGITUDE'),
                         help='East is positive, West is negative.')
 
-    args = parser.parse_args()
+    args = parser.parse_args(args=raw_args)
 
     if not args.latitude:
         raise ValueError('--latitude or a default JAKESKY_LATITUDE is required')
