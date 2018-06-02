@@ -3,7 +3,7 @@ python:
     - 2.7
 script:
   - flake8
-  - pytest --cov jakesky
+  - pytest
 after_success:
     - coveralls
 notifications:
