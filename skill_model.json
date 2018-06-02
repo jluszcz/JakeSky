@@ -1,0 +1,37 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "jake sky",
+            "intents": [
+                {
+                    "name": "GetWeather",
+                    "slots": [],
+                    "samples": [
+                        "what is the weather",
+                        "what is the forecast",
+                        "what is the weather like today",
+                        "what is the forecast like today",
+                        "what is it like today",
+                        "the weather",
+                        "the forecast",
+                        "the weather today",
+                        "the forecast today"
+                    ]
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                }
+            ],
+            "types": []
+        }
+    }
+}
