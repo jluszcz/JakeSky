@@ -1,6 +1,7 @@
 # JakeSky
 
-Returns the current weather, as well as a forecast for 8am, 12pm, and 6pm for the current date. If it's a Friday or Saturday, 10pm is also included.
+Returns the current weather, as well as a forecast for 8am, 12pm, and 6pm for the current date. If it's a Friday or Saturday, 10pm
+is also included.
 
 [<img src="https://darksky.net/dev/img/attribution/poweredby-oneline.png" width="600"/>](https://darksky.net/poweredby/)
 
@@ -16,10 +17,9 @@ Returns the current weather, as well as a forecast for 8am, 12pm, and 6pm for th
 1. [Create a virtual environment](http://python-guide-pt-br.readthedocs.io/en/latest/starting/install/osx/):
     1. `cd $jakesky_directory`
     1. `python -m virtualenv .`
-1. Source the virtualenv file: `source bin/activate`
+1. Set up environment variables, for example, by modifying `jakesky.example` and sourcing it before working.
 1. Install the required libraries:
     * `pip install -r requirements.txt`
-1. Set up environment variables, for example, by modifying `jakesky.example.vars` and sourcing it before working.
 
 ## Running
 

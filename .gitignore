@@ -11,7 +11,7 @@ htmlcov/
 include/
 lib/
 
-jakesky.vars
+jakesky
 JakeSky.zip
 
 pip-selfcheck.json

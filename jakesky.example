@@ -9,3 +9,5 @@ export TF_VAR_jakesky_key="$JAKESKY_KEY"
 export TF_VAR_jakesky_latitude="$JAKESKY_LATITUDE"
 export TF_VAR_jakesky_longitude="$JAKESKY_LONGITUDE"
 export TF_VAR_jakesky_skill_id="$JAKESKY_SKILL_ID"
+
+source bin/activate
