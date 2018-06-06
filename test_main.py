@@ -2,7 +2,6 @@ import jakesky
 
 import mock
 
-
 # This test is trivial, but the expectation is that main() is going to get more complicated in future commits
 def test_main(mocker):
     args_mock = mock.MagicMock()

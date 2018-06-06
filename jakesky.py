@@ -179,7 +179,8 @@ def get_speakable_weather_summary(summary):
 
 def split_address_string(address_string):
     parts = address_string.split()
-    assert len(parts) >= 4
+    if len(parts) < 4:
+        raise ValueError('address_string does not appear to be an address')
 
     return ' '.join(parts[:-3]), parts[-3], parts[-2], parts[-1]
 
@@ -243,8 +244,11 @@ def query_geocodio(street, city, state, postal_code):
     return result['location']['lat'], result['location']['lng']
 
 
-def alexa_handler(event, context):
+def alexa_handler(event, context, env_vars=None):
     """Entry point for Lambda"""
+
+    if env_vars is None:
+        env_vars = os.environ
 
     setup_logging()
 
@@ -254,9 +258,9 @@ def alexa_handler(event, context):
         return
 
     # The only other caller of this lambda should be the JakeSky Alexa skill
-    if event['session']['application']['applicationId'] != os.environ['JAKESKY_SKILL_ID']:
+    if event['session']['application']['applicationId'] != env_vars['JAKESKY_SKILL_ID']:
         logging.error('Invalid application ID: %s, expected: %s',
-                      event['session']['application']['applicationId'], os.environ['JAKESKY_SKILL_ID'])
+                      event['session']['application']['applicationId'], env_vars['JAKESKY_SKILL_ID'])
         raise ValueError('Invalid application ID')
 
     logging.debug('Event:\n%s', json.dumps(event))

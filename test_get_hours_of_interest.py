@@ -4,9 +4,7 @@ import pytest
 
 from datetime import date, datetime
 
-
 HOURS = [8, 12, 18]
-
 
 @pytest.fixture
 def current_date():

@@ -2,7 +2,6 @@ import jakesky
 
 from datetime import datetime
 
-
 def _get_timestamp(hour):
     return datetime(2018, 6, 3, hour)
 
