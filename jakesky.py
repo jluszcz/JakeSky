@@ -25,7 +25,7 @@ def setup_logging(verbose=False):
 
 
 def parse_args(raw_args=None):
-    if raw_args is None:
+    if raw_args is None: # pragma: no cover
         raw_args = sys.argv[1:]
 
     parser = argparse.ArgumentParser(description='Retrieve Jake-specific weather')
@@ -111,7 +111,7 @@ def parse_weather(dark_sky_response):
 def get_hours_of_interest(current_time, hours=None, add_weekend_hour=True):
     """Return the hours of interest for today's forecast"""
 
-    if not hours:
+    if hours is None: # pragma: no cover
         hours = [8, 12, 18]
     else:
         hours = list(hours)
@@ -247,7 +247,7 @@ def query_geocodio(street, city, state, postal_code):
 def alexa_handler(event, context, env_vars=None):
     """Entry point for Lambda"""
 
-    if env_vars is None:
+    if env_vars is None: # pragma: no cover
         env_vars = os.environ
 
     setup_logging()
@@ -295,5 +295,5 @@ def main():
     build_text_to_speak(weather)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     main()
