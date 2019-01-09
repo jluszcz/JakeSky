@@ -12,8 +12,8 @@ is also included.
 
 ## Setup
 
-1. Get a [DarkSky key](https://darksky.net/dev/)
-1. Get a [Geocodio key](https://geocod.io)
+1. Using JakeSky requires [DarkSky](https://darksky.net/dev/)
+1. Using JakeSky requires [Geocodio](https://geocod.io)
 1. Check out this project
 1. [Create a virtual environment](http://python-guide-pt-br.readthedocs.io/en/latest/starting/install/osx/):
     1. `cd $jakesky_directory`
@@ -73,7 +73,3 @@ GetWeather the forecast
 GetWeather the weather today
 GetWeather the forecast today
 ```
-
-## TODOs
-
-- Try something like [Kappa](https://github.com/garnaat/kappa)
