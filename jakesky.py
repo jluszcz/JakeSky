@@ -44,6 +44,23 @@ def parse_args(raw_args=None):
     return args
 
 
+def _query_url(description, url, headers=None, params=None, timeout=0.5):
+    def _log_optional(optional):
+        return json.dumps(optional) if optional else None
+
+    logging.debug('Querying %s url=%s, headers=%s, params=%s', description, url, _log_optional(headers), _log_optional(params))
+    start_time = time.time()
+    response = requests.get(url, headers=headers, params=params, timeout=timeout)
+    response.raise_for_status()
+    logging.info('Query to %s returned in %0.2f sec', description, time.time() - start_time)
+
+    response = response.json()
+
+    logging.debug('Query to %s returned: %s', description, json.dumps(response))
+
+    return response
+
+
 def query_dark_sky(latitude, longitude, use_cache=False):
     """
     Queries DarkSky using the key from JAKESKY_DARKSKY_KEY and returns the current and hourly forecast as a dict.
@@ -64,15 +81,7 @@ def query_dark_sky(latitude, longitude, use_cache=False):
         'Accept-Encoding': 'gzip',
     }
 
-    logging.debug('Querying %s, headers=%s', url, json.dumps(headers))
-    start_time = time.time()
-    response = requests.get(url, headers=headers, timeout=0.5)
-    response.raise_for_status()
-    logging.info('DarkSky query returned in %0.2f sec', time.time() - start_time)
-
-    response = response.json()
-
-    logging.debug('Query returned: %s', json.dumps(response))
+    response = _query_url('DarkSky', url, headers=headers)
 
     if use_cache:
         logging.debug('Writing result to %s', CACHE_FILE)
@@ -107,7 +116,7 @@ def parse_weather(dark_sky_response):
             weather.append(Weather(hourly_weather_time, hourly_weather['summary'], hourly_weather['temperature']))
 
     for w in weather:
-        logging.info('%s: %s (%f)', w.timestamp, w.summary, w.temperature)
+        logging.info('%s: %s (%0.2f)', w.timestamp, w.summary, w.temperature)
 
     return weather
 
@@ -184,7 +193,7 @@ def get_speakable_weather_summary(summary):
 def split_address_string(address_string):
     parts = address_string.split()
     if len(parts) < 4:
-        raise ValueError('address_string does not appear to be an address')
+        raise ValueError('address_string "%s" does not appear to be an address' % address_string)
 
     return ' '.join(parts[:-3]), parts[-3], parts[-2], parts[-1]
 
@@ -205,18 +214,14 @@ def get_alexa_device_location(event):
     device_id = event['context']['System']['device']['deviceId']
     api_token = event['context']['System']['apiAccessToken']
 
-    header = {
+    headers = {
         'Accept': 'application/json',
         'Authorization': 'Bearer %s' % api_token
     }
 
     url = '%s/v1/devices/%s/settings/address' % (base_url, device_id)
 
-    response = requests.get(url, headers=header)
-    response.raise_for_status()
-
-    response = response.json()
-    logging.debug(json.dumps(response))
+    response = _query_url('Alexa Device Location', url, headers=headers)
 
     assert 'US' == response['countryCode']
     return response['addressLine1'], response['city'], response['stateOrRegion'], response['postalCode']
@@ -232,15 +237,11 @@ def query_geocodio(street, city, state, postal_code):
         'api_key': os.environ['JAKESKY_GEOCODIO_KEY'],
     }
 
-    header = {
+    headers = {
         'Accept': 'application/json'
     }
 
-    response = requests.get(url, params=params)
-    response.raise_for_status()
-
-    response = response.json()
-    logging.debug(json.dumps(response))
+    response = _query_url('Geocodio', url, headers=headers, params=params)
 
     assert 1 == len(response['results'])
     result = response['results'][0]
