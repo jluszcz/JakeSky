@@ -63,13 +63,14 @@ def query_dark_sky(latitude, longitude, use_cache=False):
         'Accept-Encoding': 'gzip',
     }
 
-    logging.debug('Querying %s', url)
-    response = requests.get(url, headers=headers)
+    logging.info('Querying %s', url)
+    response = requests.get(url, headers=headers, timeout=0.5)
     response.raise_for_status()
+    logging.info('Queried %s', url)
 
     response = response.json()
 
-    logging.debug(json.dumps(response))
+    logging.debug('Query returned: %s', json.dumps(response))
 
     logging.debug('Writing result to %s', CACHE_FILE)
     with gzip.open(CACHE_FILE, 'wb') as f:
