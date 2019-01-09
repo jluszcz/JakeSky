@@ -8,6 +8,7 @@ import os
 import pytz
 import requests
 import sys
+import time
 
 from collections import namedtuple
 from datetime import datetime
@@ -63,18 +64,20 @@ def query_dark_sky(latitude, longitude, use_cache=False):
         'Accept-Encoding': 'gzip',
     }
 
-    logging.info('Querying %s', url)
+    logging.debug('Querying %s, headers=%s', url, json.dumps(headers))
+    start_time = time.time()
     response = requests.get(url, headers=headers, timeout=0.5)
     response.raise_for_status()
-    logging.info('Queried %s', url)
+    logging.info('DarkSky query returned in %0.2f sec', time.time() - start_time)
 
     response = response.json()
 
     logging.debug('Query returned: %s', json.dumps(response))
 
-    logging.debug('Writing result to %s', CACHE_FILE)
-    with gzip.open(CACHE_FILE, 'wb') as f:
-        json.dump(response, f)
+    if use_cache:
+        logging.debug('Writing result to %s', CACHE_FILE)
+        with gzip.open(CACHE_FILE, 'wb') as f:
+            json.dump(response, f)
 
     return response
 
