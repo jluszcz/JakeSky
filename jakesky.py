@@ -202,7 +202,7 @@ def get_geo_coordinates(address_string=None, event=None):
     latitude = os.environ.get('JAKESKY_LATITUDE')
     longitude = os.environ.get('JAKESKY_LONGITUDE')
     if latitude is not None and longitude is not None:
-        logging.debug('Using specified latitude/longitude: %d, %d', latitude, longitude)
+        logging.debug('Using specified latitude/longitude: %s, %s', latitude, longitude)
         return float(latitude), float(longitude)
     elif address_string:
         logging.debug('Using specified address: %s', address_string)
