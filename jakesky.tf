@@ -3,6 +3,8 @@ variable "aws_acct_id" {}
 variable "jakesky_darksky_key" {}
 variable "jakesky_geocodio_key" {}
 variable "jakesky_skill_id" {}
+variable "jakesky_latitude" {}
+variable "jakesky_longitude" {}
 
 variable "jakesky_filename" {
     type = "string"
@@ -76,6 +78,8 @@ resource "aws_lambda_function" "jakesky" {
             JAKESKY_DARKSKY_KEY = "${var.jakesky_darksky_key}"
             JAKESKY_GEOCODIO_KEY = "${var.jakesky_geocodio_key}"
             JAKESKY_SKILL_ID = "${var.jakesky_skill_id}"
+            JAKESKY_LATITUDE = "${var.jakesky_latitude}"
+            JAKESKY_LONGITUDE = "${var.jakesky_longitude}"
         }
     }
 }

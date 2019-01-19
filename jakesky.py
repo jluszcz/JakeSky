@@ -199,12 +199,19 @@ def split_address_string(address_string):
 
 
 def get_geo_coordinates(address_string=None, event=None):
-    if address_string:
+    latitude = os.environ.get('JAKESKY_LATITUDE')
+    longitude = os.environ.get('JAKESKY_LONGITUDE')
+    if latitude is not None and longitude is not None:
+        logging.debug('Using specified latitude/longitude: %d, %d', latitude, longitude)
+        return float(latitude), float(longitude)
+    elif address_string:
+        logging.debug('Using specified address: %s', address_string)
         address, city, state, postal_code = split_address_string(address_string)
     elif event:
+        logging.debug('Looking up address via Alexa device location')
         address, city, state, postal_code = get_alexa_device_location(event)
     else:
-        raise ValueError('address_string or event must be provided')
+        raise ValueError('latitude/longitude, address_string, or event must be provided')
 
     return query_geocodio(address, city, state, postal_code)
 
