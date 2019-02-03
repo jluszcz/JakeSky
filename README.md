@@ -28,7 +28,7 @@ is also included.
 
 ## Testing
 
-`pytest -cov`
+`pytest --cov`
 
 ## Hooking up to Alexa/AWS
 
