@@ -97,7 +97,7 @@ def parse_weather(dark_sky_response):
     timezone = pytz.timezone(dark_sky_response['timezone'])
     now = datetime.fromtimestamp(dark_sky_response['currently']['time'], timezone)
 
-    hours_of_interest = get_hours_of_interest(now)
+    hours_of_interest = get_hours_of_interest(now, add_weekend_hour=False)
 
     weather = [Weather(now, dark_sky_response['currently']['summary'], dark_sky_response['currently']['temperature'])]
 
