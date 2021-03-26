@@ -4,7 +4,7 @@
 .coverage
 .pytest_cache
 .Python
-.terraform/
+.terraform*
 
 bin/
 htmlcov/
