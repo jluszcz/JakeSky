@@ -73,7 +73,7 @@ resource "aws_lambda_function" "jakesky" {
   role             = aws_iam_role.jakesky_role.arn
   handler          = "jakesky.alexa_handler"
   source_code_hash = filebase64sha256(var.jakesky_filename)
-  runtime          = "python3.7"
+  runtime          = "python3.8"
   publish          = "false"
   description      = "Retrieve local weather from DarkSky for commutes and lunchtime"
 
