@@ -1,3 +1,7 @@
+terraform {
+  backend "s3" {}
+}
+
 # Sourced from environment variables named TF_VAR_${VAR_NAME}
 variable "aws_acct_id" {}
 
@@ -76,6 +80,8 @@ resource "aws_lambda_function" "jakesky" {
   runtime          = "python3.8"
   publish          = "false"
   description      = "Retrieve local weather from DarkSky for commutes and lunchtime"
+  timeout          = 5
+  memory_size      = 256
 
   kms_key_arn = aws_kms_key.lambda_default_key.arn
   environment {
