@@ -75,7 +75,7 @@ def query_dark_sky(latitude, longitude, use_cache=False):
     key = os.environ['JAKESKY_DARKSKY_KEY']
 
     # Since we only care about the current and hourly forecast for specific times, exclude some of the data in the response.
-    url = 'https://api.darksky.net/forecast/%s/%f,%f?exclude=minutely,daily,flags' % (key, latitude, longitude)
+    url = f'https://api.darksky.net/forecast/{key}/{latitude},{longitude}?exclude=minutely,daily,flags'
     headers = {
         'Accept': 'application/json',
         'Accept-Encoding': 'gzip',
@@ -149,7 +149,7 @@ def get_hours_of_interest(current_time, hours=None, add_weekend_hour=True):
 def get_speakable_timestamp(timestamp):
     """Return a 'speakable' timestamp, e.g. 8am, noon, 9pm, etc."""
 
-    speakable = '%s %s' % (timestamp.strftime('%I').lstrip('0'), timestamp.strftime('%p'))
+    speakable = f"{timestamp.strftime('%I').lstrip('0')} {timestamp.strftime('%p')}"
     if speakable == '12 PM':
         return 'noon'
     elif speakable == '12 AM':
@@ -163,15 +163,15 @@ def build_text_to_speak(weather):
     # The first entry is assumed to be the current time, and there should always be at least one entry
     current = weather[0]
 
-    to_speak.append('It\'s currently %s.' % get_speakable_weather(current))
+    to_speak.append(f"It's currently {get_speakable_weather(current)}.")
 
     # Remaining entries are in the future
     for w in weather[1:]:
-        to_speak.append('At %s, it will be %s.' % (get_speakable_timestamp(w.timestamp), get_speakable_weather(w)))
+        to_speak.append(f'At {get_speakable_timestamp(w.timestamp)}, it will be {get_speakable_weather(w)}.')
 
     # Stick an 'And' on the final entry if there is more than one
     if len(to_speak) > 1:
-        to_speak[-1] = 'And ' + to_speak[-1][0].lower() + to_speak[-1][1:]
+        to_speak[-1] = f'And {to_speak[-1][0].lower()}{to_speak[-1][1:]}'
 
     text_to_speak = ' '.join(to_speak)
 
@@ -181,7 +181,7 @@ def build_text_to_speak(weather):
 
 
 def get_speakable_weather(weather):
-    return '%d and %s' % (weather.temperature, get_speakable_weather_summary(weather.summary))
+    return f'{weather.temperature} and {get_speakable_weather_summary(weather.summary)}'
 
 
 def get_speakable_weather_summary(summary):
@@ -193,7 +193,7 @@ def get_speakable_weather_summary(summary):
 def split_address_string(address_string):
     parts = address_string.split()
     if len(parts) < 4:
-        raise ValueError('address_string "%s" does not appear to be an address' % address_string)
+        raise ValueError(f'address_string "{address_string}" does not appear to be an address')
 
     return ' '.join(parts[:-3]), parts[-3], parts[-2], parts[-1]
 
@@ -223,10 +223,10 @@ def get_alexa_device_location(event):
 
     headers = {
         'Accept': 'application/json',
-        'Authorization': 'Bearer %s' % api_token
+        'Authorization': f'Bearer {api_token}'
     }
 
-    url = '%s/v1/devices/%s/settings/address' % (base_url, device_id)
+    url = f'{base_url}/v1/devices/{device_id}/settings/address'
 
     response = _query_url('Alexa Device Location', url, headers=headers)
 
