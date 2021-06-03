@@ -88,7 +88,6 @@ resource "aws_lambda_function" "jakesky" {
     variables = {
       JAKESKY_DARKSKY_KEY  = var.jakesky_darksky_key
       JAKESKY_GEOCODIO_KEY = var.jakesky_geocodio_key
-      JAKESKY_SKILL_ID     = var.jakesky_skill_id
       JAKESKY_LATITUDE     = var.jakesky_latitude
       JAKESKY_LONGITUDE    = var.jakesky_longitude
     }
@@ -100,3 +99,10 @@ resource "aws_cloudwatch_log_group" "jakesky_logs" {
   retention_in_days = "7"
 }
 
+resource "aws_lambda_permission" "allow_alexa" {
+  statement_id        = "AllowExecutionFromAlexa"
+  action              = "lambda:InvokeFunction"
+  function_name       = aws_lambda_function.jakesky.function_name
+  principal           = "alexa-appkit.amazon.com"
+  event_source_token  = var.jakesky_skill_id
+}

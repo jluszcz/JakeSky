@@ -266,14 +266,8 @@ def alexa_handler(event, context, env_vars=None):
 
     # If calling from a scheduled event, this is only a 'warmup' call
     if event.get('detail-type') == 'Scheduled Event':
-        logging.info('Not executing jakesky during warmup call')
+        logging.info('Warmup only, returning early')
         return
-
-    # The only other caller of this lambda should be the JakeSky Alexa skill
-    if event['session']['application']['applicationId'] != env_vars['JAKESKY_SKILL_ID']:
-        logging.error('Invalid application ID: %s, expected: %s',
-                      event['session']['application']['applicationId'], env_vars['JAKESKY_SKILL_ID'])
-        raise ValueError('Invalid application ID')
 
     logging.debug('Event:\n%s', json.dumps(event))
 

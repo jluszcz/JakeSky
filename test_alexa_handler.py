@@ -13,11 +13,8 @@ EVENT = {
     }
 }
 
-ENV = {
-    'JAKESKY_SKILL_ID': SKILL_ID
-}
 
-def _test_alexa_handler(mocker, event=dict(EVENT), env_vars=dict(ENV), expect_calls=True):
+def _test_alexa_handler(mocker, event=dict(EVENT), expect_calls=True):
     context = MagicMock()
 
     get_geo_mock = mocker.patch('jakesky.get_geo_coordinates', return_value=(0, 0, ))
@@ -27,7 +24,7 @@ def _test_alexa_handler(mocker, event=dict(EVENT), env_vars=dict(ENV), expect_ca
 
     mocks = [get_geo_mock, query_dark_sky_mock, parse_weather_mock, build_text_mock]
 
-    jakesky.alexa_handler(event, context, env_vars)
+    jakesky.alexa_handler(event, context)
 
     for m in mocks:
         if expect_calls:
@@ -38,11 +35,6 @@ def _test_alexa_handler(mocker, event=dict(EVENT), env_vars=dict(ENV), expect_ca
 
 def test_alexa_handler_scheduled_event(mocker):
     _test_alexa_handler(mocker, event={'detail-type': 'Scheduled Event'}, expect_calls=False)
-
-
-def test_alexa_handler_wrong_skill_id(mocker):
-    with pytest.raises(ValueError):
-        _test_alexa_handler(mocker, env_vars={'JAKESKY_SKILL_ID': 'wrong-skill-id'}, expect_calls=False)
 
 
 def test_alexa_handler(mocker):
