@@ -181,7 +181,7 @@ def build_text_to_speak(weather):
 
 
 def get_speakable_weather(weather):
-    return f'{weather.temperature} and {get_speakable_weather_summary(weather.summary)}'
+    return f'{weather.temperature:.0f} and {get_speakable_weather_summary(weather.summary)}'
 
 
 def get_speakable_weather_summary(summary):
