@@ -8,7 +8,7 @@ is also included.
 ## Status
 
 [![Build Status](https://travis-ci.com/jluszcz/JakeSky.svg?branch=master)](https://travis-ci.com/jluszcz/JakeSky)
-[![Coverage Status](https://coveralls.io/repos/github/jluszcz/JakeSky/badge.svg)](https://coveralls.io/github/jluszcz/JakeSky)
+[![Coverage Status](https://coveralls.io/repos/github/jluszcz/JakeSky/badge.svg?branch=master)](https://coveralls.io/github/jluszcz/JakeSky?branch=master)
 
 ## Setup
 
