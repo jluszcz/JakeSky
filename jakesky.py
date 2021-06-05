@@ -69,7 +69,7 @@ def query_dark_sky(latitude, longitude, use_cache=False):
 
     if use_cache and os.path.isfile(CACHE_FILE):
         logging.debug('Using cached result from %s', CACHE_FILE)
-        with gzip.open(CACHE_FILE, 'rb') as f:
+        with gzip.open(CACHE_FILE, 'rt') as f:
             return json.loads(f.read())
 
     key = os.environ['JAKESKY_DARKSKY_KEY']
@@ -85,7 +85,7 @@ def query_dark_sky(latitude, longitude, use_cache=False):
 
     if use_cache:
         logging.debug('Writing result to %s', CACHE_FILE)
-        with gzip.open(CACHE_FILE, 'wb') as f:
+        with gzip.open(CACHE_FILE, 'wt') as f:
             json.dump(response, f)
 
     return response
