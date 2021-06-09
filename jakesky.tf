@@ -35,6 +35,14 @@ resource "aws_cloudwatch_event_rule" "jakesky_schedule" {
   schedule_expression = "cron(0/5 11_13 ? * * *)"
 }
 
+resource "aws_lambda_permission" "jakesky_allow_cloudwatch" {
+  statement_id   = "Jakesky-AllowExecutionFromCloudWatch"
+  action         = "lambda:InvokeFunction"
+  function_name  = aws_lambda_function.jakesky.arn
+  principal      = "events.amazonaws.com"
+  source_arn     = aws_cloudwatch_event_rule.jakesky_schedule.arn
+}
+
 resource "aws_kms_key" "lambda_default_key" {
   enable_key_rotation = "true"
 }
